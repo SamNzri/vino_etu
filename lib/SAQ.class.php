@@ -64,7 +64,7 @@ class SAQ extends Modele {
 		curl_close($s);
 
 		$doc = new DOMDocument();
-		var_dump($s);
+		var_dump($doc);
 		$doc -> recover = true;
 		$doc -> strictErrorChecking = false;
 		@$doc -> loadHTML(self::$_webpage);
@@ -177,7 +177,6 @@ class SAQ extends Modele {
 		if ($rows -> num_rows == 1) {
 			$type = $rows -> fetch_assoc();
 			$type = $type['id'];
-			var_dump($type);
 			$rows = $this -> _db -> query("select id from vino__bouteille where code_saq = '" . $bte -> desc -> code_SAQ . "'");
 			if ($rows -> num_rows < 1) {
 				$prix = str_replace(",", ".", $bte->prix);

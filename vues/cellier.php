@@ -7,9 +7,12 @@
       </div>
       <div class="description">
       <form method="POST" action="?requete=modifierBouteilleCellier&id_bouteille_cellier=<?php echo $bouteille['id_bouteille_cellier'] ?>">
-        <p class="nom">Nom : <?php echo $bouteille['nom'] ?></p>
+        <h3 class="nom">Nom: <?php echo $bouteille['nom'] ?></h3>
         <p class="quantite">Quantité : <?php echo $bouteille['quantite'] ?></p>
+        <p class="quantite">Prix : <?php echo $bouteille['prix'] ?></p>
         <p class="pays">Pays : <?php echo $bouteille['pays'] ?></p>
+        <p class="pays">Garde : <?php echo $bouteille['garde_jusqua'] ?></p>
+        <p class="pays">Notes : <?php echo $bouteille['notes'] ?></p>
         <p class="type">Type : <?php echo $bouteille['type'] ?></p>
         <p class="millesime">Millesime : <?php echo $bouteille['millesime'] ?></p>
         <p><a href="<?php echo $bouteille['url_saq'] ?>">Voir SAQ</a></p>
