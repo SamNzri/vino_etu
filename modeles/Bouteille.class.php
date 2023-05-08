@@ -33,7 +33,7 @@ class Bouteille extends Modele {
 	{
 		
 		$rows = Array();
-		$requete ='SELECT 
+		$requete =	'SELECT 
 						c.id as id_bouteille_cellier,
 						c.id_bouteille, 
 						c.date_achat, 
@@ -52,9 +52,11 @@ class Bouteille extends Modele {
 						b.description,
 						t.type 
 						from vino__cellier c 
-						INNER JOIN vino__bouteille b ON c.id_bouteille = b.id
-						INNER JOIN vino__type t ON t.id = b.type
-						'; 
+						left JOIN vino__bouteille b ON c.id = b.id
+						left JOIN vino__type t ON t.id = b.type
+					'; 
+
+
 		if(($res = $this->_db->query($requete)) ==	 true)
 		{
 			if($res->num_rows)
@@ -168,9 +170,71 @@ class Bouteille extends Modele {
         
 		return $res;
 	}
+
+
+	public function getBouteilleCellierParID($id) {
+	
+		global $connexion;
+	
+		$requete ='SELECT 
+					c.id as id_bouteille_cellier,
+					c.id_bouteille, 
+					c.date_achat, 
+					c.garde_jusqua, 
+					c.notes, 
+					c.prix, 
+					c.quantite,
+					c.millesime, 
+					b.id,
+					b.nom, 
+					b.type, 
+					b.image, 
+					b.code_saq, 
+					b.url_saq, 
+					b.pays, 
+					b.description,
+					t.type 
+					from vino__cellier c 
+					INNER JOIN vino__bouteille b ON c.id_bouteille = b.id
+					INNER JOIN vino__type t ON t.id = b.type
+					WHERE c.id = ?';
+
+
+		$reqPrep = mysqli_prepare($connexion, $requete);
+	
+		if($reqPrep)
+		{
+			mysqli_stmt_bind_param($reqPrep, "s", $id);
+	
+			mysqli_stmt_execute($reqPrep);
+			$resultats = mysqli_stmt_get_result($reqPrep);
+			return $resultats;
+		}
+		else
+			die("Erreur de requête préparée...");
+	}
+	
+
+
+	
+
+
+	public function updateBouteilleCellier($id_bouteille_cellier, $id_bouteille, $date_achat, $garde_jusqua, $notes, $prix, $quantite, $millesime)
+    {
+        global $connexion;
+    
+        $stmt = $connexion->prepare("UPDATE vino__cellier SET id_bouteille = ?, date_achat = ?, garde_jusqua = ?, notes = ?, prix = ?, quantite = ?, millesime = ? WHERE id = ?");
+        $stmt->bind_param("isssdiii", $id_bouteille, $date_achat, $garde_jusqua, $notes, $prix, $quantite, $millesime, $id_bouteille_cellier);
+        $result = $stmt->execute();
+    
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
 }
-
-
-
-
 ?>

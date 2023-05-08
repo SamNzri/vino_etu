@@ -17,7 +17,8 @@ window.addEventListener('load', function() {
         console.log(element);
         element.addEventListener("click", function(evt){
             let id = evt.target.parentElement.dataset.id;
-            let requete = new Request(BaseURL+"index.php?requete=boireBouteilleCellier", {method: 'POST', body: '{"id": '+id+'}'});
+            console.log(id)
+            let requete = new Request(BaseURL+"index.php?requete=modifierQuantiteBouteilleCellier", {method: 'POST', body: '{"id": '+id+'}'});
 
             fetch(requete)
             .then(response => {
@@ -58,6 +59,27 @@ window.addEventListener('load', function() {
         })
 
     });
+    document.querySelectorAll(".btnModifier").forEach(function(element){
+      console.log(element);
+      element.addEventListener("click", function(evt){
+          let id = evt.target.parentElement.dataset.id;
+          let requete = new Request(BaseURL+"index.php?requete=boireBouteilleCellier", {method: 'POST', body: '{"id": '+id+'}'});
+          fetch(requete)
+          .then(response => {
+              if (response.status === 200) {
+                return response.json();
+              } else {
+                throw new Error('Erreur');
+              }
+            })
+            .then(response => {
+              console.debug(response);
+            }).catch(error => {
+              console.error(error);
+            });
+      })
+
+  });
    
     let inputNomBouteille = document.querySelector("[name='nom_bouteille']");
     console.log(inputNomBouteille);

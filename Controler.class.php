@@ -11,8 +11,12 @@
  * 
  */
 
+
+
 class Controler 
 {
+
+	
 	
 		/**
 		 * Traite la requête
@@ -31,12 +35,15 @@ class Controler
 				case 'ajouterNouvelleBouteilleCellier':
 					$this->ajouterNouvelleBouteilleCellier();
 					break;
-				case 'ajouterBouteilleCellier':
-					$this->ajouterBouteilleCellier();
-					break;
 				case 'boireBouteilleCellier':
 					$this->boireBouteilleCellier();
 					break;
+					case 'modifierBouteilleCellier':
+						$this->modifierBouteilleCellier();
+						break;
+						case 'updateBouteilleCellier':
+							$this->updateBouteilleCellier();
+							break;
 				default:
 					$this->accueil();
 					break;
@@ -46,7 +53,9 @@ class Controler
 		private function accueil()
 		{
 			$bte = new Bouteille();
+			
             $data = $bte->getListeBouteilleCellier();
+		
 			include("vues/entete.php");
 			include("vues/cellier.php");
 			include("vues/pied.php");
@@ -74,6 +83,7 @@ class Controler
             echo json_encode($listeBouteille);
                   
 		}
+
 		private function ajouterNouvelleBouteilleCellier()
 		{
 			$body = json_decode(file_get_contents('php://input'));
@@ -82,7 +92,7 @@ class Controler
 				$bte = new Bouteille();
 				//var_dump($_POST['data']);
 				
-				//var_dump($data);
+				var_dump($body);
 				$resultat = $bte->ajouterBouteilleCellier($body);
 				echo json_encode($resultat);
 			}
@@ -94,25 +104,66 @@ class Controler
 			
             
 		}
-		
-		private function boireBouteilleCellier()
-		{
-			$body = json_decode(file_get_contents('php://input'));
-			
-			$bte = new Bouteille();
-			$resultat = $bte->modifierQuantiteBouteilleCellier($body->id, -1);
-			echo json_encode($resultat);
-		}
 
-		private function ajouterBouteilleCellier()
-		{
-			$body = json_decode(file_get_contents('php://input'));
-			
-			$bte = new Bouteille();
-			$resultat = $bte->modifierQuantiteBouteilleCellier($body->id, 1);
-			echo json_encode($resultat);
+		private function modifierBouteilleCellier() {
+			if(isset($_POST['id_bouteille_cellier'])) {
+				$id_bouteille_cellier = $_POST['id_bouteille_cellier'];
+				$bte = new Bouteille();
+				$donnees["bouteille"] = $bte->getBouteilleCellierParId($id_bouteille_cellier);
+				include("vues/entete.php");
+				include("vues/modifier.php");
+				include("vues/pied.php");
+			}
+			else {
+				// handle the case where id_bouteille_cellier is not set in the POST data
+			}
 		}
 		
+		
+
+
+
+
+		public function updateBouteilleCellier() {
+			$id_bouteille_cellier = $_POST['id_bouteille_cellier'];
+			$id_bouteille = $_POST['id_bouteille'];
+			$date_achat = $_POST['date_achat'];
+			$garde_jusqua = $_POST['garde'];
+			$notes = $_POST['notes'];
+			$prix = $_POST['prix'];
+			$quantite = $_POST['quantite'];
+			$millesime = $_POST['millesime'];
+			
+			$bouteille = new Bouteille();
+			$result = $bouteille->updateBouteilleCellier($id_bouteille_cellier, $id_bouteille, $date_achat, $garde_jusqua, $notes, $prix, $quantite, $millesime);
+		
+			if ($result) {
+				echo "The bottle in the cellar was updated successfully.";
+			} else {
+				echo "There was an error updating the bottle in the cellar.";
+			}
+			
+			header('Location: index.php?accueil');
+		}
+		
+		
+			 
+
+		// private function boireBouteilleCellier()
+		// {
+		// 	$body = json_decode(file_get_contents('php://input'));
+			
+		// 	$bte = new Bouteille();
+		// 	$resultat = $bte->modifierQuantiteBouteilleCellier($body->id, -1);
+		// 	echo json_encode($resultat);
+		// }
+
+
+	
+	
+
+
+	
 }
 ?>
 

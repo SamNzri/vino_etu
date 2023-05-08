@@ -47,6 +47,7 @@ class SAQ extends Modele {
         curl_setopt_array($s,array(
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_CAINFO => 'C:\Users\Nazar\cacert.pem',
             CURLOPT_USERAGENT=>'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0',
             CURLOPT_ENCODING=>'gzip, deflate',
             CURLOPT_HTTPHEADER=>array(
@@ -63,6 +64,7 @@ class SAQ extends Modele {
 		curl_close($s);
 
 		$doc = new DOMDocument();
+		var_dump($s);
 		$doc -> recover = true;
 		$doc -> strictErrorChecking = false;
 		@$doc -> loadHTML(self::$_webpage);
@@ -80,7 +82,7 @@ class SAQ extends Modele {
 				echo "<br>Code de retour : " . $retour -> raison . "<br>";
 				if ($retour -> succes == false) {
 					echo "<pre>";
-					var_dump($info);
+					// var_dump($info);
 					echo "</pre>";
 					echo "<br>";
 				} else {
@@ -162,6 +164,7 @@ class SAQ extends Modele {
 		return $info;
 	}
 
+	
 	private function ajouteProduit($bte) {
 		$retour = new stdClass();
 		$retour -> succes = false;
@@ -173,12 +176,12 @@ class SAQ extends Modele {
 		
 		if ($rows -> num_rows == 1) {
 			$type = $rows -> fetch_assoc();
-			//var_dump($type);
 			$type = $type['id'];
-
+			var_dump($type);
 			$rows = $this -> _db -> query("select id from vino__bouteille where code_saq = '" . $bte -> desc -> code_SAQ . "'");
 			if ($rows -> num_rows < 1) {
-				$this -> stmt -> bind_param("sissssisss", $bte -> nom, $type, $bte -> img, $bte -> desc -> code_SAQ, $bte -> desc -> pays, $bte -> desc -> texte, $bte -> prix, $bte -> url, $bte -> img, $bte -> desc -> format);
+				$prix = str_replace(",", ".", $bte->prix);
+				$this -> stmt -> bind_param("sissssssss", $bte -> nom, $type, $bte -> img, $bte -> desc -> code_SAQ, $bte -> desc -> pays, $bte -> desc -> texte, $prix, $bte -> url, $bte -> img, $bte -> desc -> format);
 				$retour -> succes = $this -> stmt -> execute();
 				$retour -> raison = self::INSERE;
 				//var_dump($this->stmt);
@@ -194,6 +197,6 @@ class SAQ extends Modele {
 		return $retour;
 
 	}
-
 }
+
 ?>
